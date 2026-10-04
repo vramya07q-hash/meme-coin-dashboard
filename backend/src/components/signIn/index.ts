@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
-const JWT_SECRET= '123456';
+const JWT_SECRET= process.env.JWT_SECRET || '123456';
 
 export default async  function Login(req:Request,res:Response) {
 

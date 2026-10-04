@@ -1,7 +1,7 @@
 import type { NextFunction,Response,Request } from "express";
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = '123456';
+const JWT_SECRET= process.env.JWT_SECRET || '123456';
 
 export default async function(req:Request,res:Response,next:NextFunction) {
     try{
