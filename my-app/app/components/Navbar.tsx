@@ -6,28 +6,6 @@ import { Input } from '@/components/ui/input'
 import { Moon, Search ,Sidebar} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-export const items=[
-  {
-    title:"Trending",
-    url:"/trending"
-  },
-  {
-    title:"All Meme Coins",
-    url:"/all-meme-coins"
-  },
-  {
-    title:"Watchlist",  
-    url:"/watchlist"
-  },
-  {
-    title:"Protfolio",
-    url:"/portfolio"
-  },{
-    title:"Settings",
-    url:"/settings"
-  }
-
-]
 
 export default function Navbar() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -91,8 +69,8 @@ export default function Navbar() {
   }
 
   return (
-    <div className="w-full h-[60px] flex flex-col gap-2 items-center" onClick={() => setSearchTerm("")} >
-      <div className="w-full h-[60px] flex items-center justify-between bg-gray-800 px-2">
+    <div className="w-full h-[60px] relative bg-gray-900 flex flex-col gap-1 items-center"  onClick={() => setSearchTerm("")} >
+      <div className="w-full h-full flex items-center justify-between bg-gray-800  px-2">
         {/* LEFT SIDE */}
         <div className="flex items-center gap-4">
           <Image
@@ -170,22 +148,52 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      {/* Input */}
-      <div className="relative flex justify-center w-10/12  md:hidden h-[45px] ">
-        <button
-          type="button"
-          onClick={() => inputRef.current?.focus()}
-          className="absolute left-3 top-1/2 z-10 -translate-y-1/2"
-        >
-          <Search color="white" size={18} />
-        </button>
 
-        <Input
-          type="text"
-          placeholder="Search Meme Coins"
-          className="w-full bg-gray-800 text-sm h-[38px] font-light  text-white rounded-lg border-gray-500 focus:border-blue-500 focus:ring-blue-500 pl-10"
+      {/*Small Screen Input */}
+      <div className="relative w-3/4 h-full  md:hidden"  ref={inputRef}>
+          <button
+            type="button"
+            onClick={() => inputRef.current?.focus()}
+            className="absolute left-3 top-1/2 z-10  -translate-y-1/2"
+          >
+            <Search color="white" size={18} />
+          </button>
+
+          <Input
+            type="text"
+            value={searchTerm}
+            placeholder="Search Meme Coins"
+            onChange={handleSearch}
+            className="w-full bg-gray-800  text-white text-md rounded-lg border-gray-500 focus:border-blue-500 focus:ring-blue-500 pl-10"
         />
-      </div>
+
+          <div
+
+            className={`w-full absolute top-[100%] h-auto left-0 bg-gray-800 rounded-lg border border-gray-500 mt-1 z-10 ${
+              searchResults.length === 0 || searchTerm.trim() === ""
+                ? "hidden"
+                : "block"
+            }
+            
+            `}
+          >
+            {searchTerm.trim() !== "" && (
+              <ul className="flex flex-col gap-1 p-2">
+                <li className="text-gray-400 text-sm">Search Results</li>
+
+                {searchResults.map((result: any) => (
+                  <li
+                    key={result.id}
+                    className="text-white text-sm cursor-pointer hover:bg-gray-700 p-1 rounded-md"
+                    onClick={() => handleResultClick(result.name)}
+                  >
+                    {result.name} ({result.symbol.toUpperCase()})
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
     </div>
   );
 }
