@@ -4,12 +4,26 @@ import Navbar from "../components/Navbar";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { Amphora, ArrowLeftRight, CircleCheck, CircleX, Droplet, ReceiptText, TriangleAlert, UsersRound } from "lucide-react";
+import { Card } from "@/components/ui/card";
+
 export default function Dashboard() {
+  interface TotalValuesType {
+    totalMarketCap: number;
+    total24hVolume: number;
+    trendingCoinsCount: number;
+    top5Dominance: number;
+    totalChange24h:number;
+  }
 
   const [coins, setCoins] = useState<any[]>([]);
   const [volume, setVolume] = useState<any[]>([]);
-  const [widthByVolume, setWidthByVolume] = useState<any[]>([]);
-  const [index, setIndex] = useState(0);
+  const [totalValues, setTotalValues] = useState<TotalValuesType>({
+    totalMarketCap: 0,
+    total24hVolume: 0,
+    trendingCoinsCount: 0,
+    top5Dominance: 0,
+    totalChange24h:0
+  });
 
   async function getCoins() {
     try {
@@ -41,19 +55,71 @@ export default function Dashboard() {
     }
   }
 
+  async function getTotalvalues() {
+    try {
+      const response = await axios.get('http://localhost:3000/api/coins/totalValues');
+
+      const result = response.data;
+      setTotalValues(result);
+      return result;
+    } catch (error: any) {
+      console.log(error.message)
+    }
+  }
+
   useEffect(() => {
     getCoins();
     getCoinsByVolume();
+    getTotalvalues();
   }, []);
 
   return (
     <div className='w-full min-h-screen bg-gray-900 '>
       {/* navbar */}
       <Navbar />
-      <div className='w-full h-auto flex lg:gap-2' >
+      <div className='w-full h-auto flex lg:gap-2 justify-between' >
         {/* large first card */}
-        <div className='hidden lg:block w-1/2 h-full border border-gray-700 '>
-          
+        <div className='hidden lg:block w-1/2 h-auto  flex flex-col text-gray-200 items-center pl-4'>
+
+          <div className='w-full h-auto flex flex-col gap-4 mt-8 md:mt-5 pb-4  '>
+            {/* trending coin */}
+            <div>
+              <h1 className='text-2xl  '>Trending Meme Coins</h1>
+              <p className='text-sm font-light text-gray-300'>Top meme coins based on 24h market activity</p>
+            </div>
+
+            {/* four  linear cards*/}
+            <div className='w-full flex gap-3'>
+              <FourCard
+                image="/marketCap.jpg"
+                name="Total Market Cap"
+                totalAmount={Number(totalValues.totalMarketCap.toFixed(2))}
+                change24h={Number(totalValues.totalChange24h.toFixed(2))}
+              />
+
+              <FourCard
+                image="/speaker.jpg"
+                name="Total 24h Volume"
+                totalAmount={Number(totalValues.total24hVolume.toFixed(2))}
+                change24h={5.42}
+              />
+
+              <FourCard
+                image="/star.jpg"
+                name="Trending Coins"
+                totalAmount={totalValues.trendingCoinsCount}
+                change24h={5.42}
+              />
+
+              <FourCard
+                image="/dominance.jpg"
+                name="Dominance"
+                totalAmount={Number(totalValues.top5Dominance.toFixed(2))}
+                change24h={5.42}
+              />
+            </div>
+          </div>
+
         </div>
         {/* Larger second part */}
         <div className="w-full lg:w-1/2  h-auto bg-gray-900 flex flex-col gap-1 md:gap-0  items-center ">
@@ -84,19 +150,19 @@ export default function Dashboard() {
 
               {/*days */}
               <div className="w-full h-1/10 bg-gray-700 grid grid-cols-5  rounded-lg text-white  font-normal text-sm ">
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-blue-900 py-2  ">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2  ">
                   7D
                 </p>
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-blue-900 py-2">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2">
                   1M
                 </p>
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-blue-900 py-2">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2">
                   3M
                 </p>
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-blue-900 py-2">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2">
                   1Y
                 </p>
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-blue-900 py-2">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2">
                   ALL
                 </p>
               </div>
@@ -301,57 +367,83 @@ export default function Dashboard() {
 
           <div className='hidden lg:block w-[95%] bg-gray-800 flex felx-col text-gray-400 border border-gray-600 rounded-md '>
             <div className='flex flex-col gap-2 mb-6 '>
-            <div className='text-white text-lg flex ml-5 '>
-              <p>Risk & Security </p>
-            </div>
+              <div className='text-white text-lg flex ml-5 '>
+                <p>Risk & Security </p>
+              </div>
 
-            <div className='flex justify-between ml-5 mr-45'>
+              <div className='flex justify-between ml-5 mr-45'>
 
-              <div className='flex gap-3'>
-              <ReceiptText />
-              <p>Contract Voil</p>
-              </div>
-              
-              <CircleCheck fill='green'/>
-            </div>
+                <div className='flex gap-3'>
+                  <ReceiptText />
+                  <p>Contract Voil</p>
+                </div>
 
-            <div className='flex justify-between ml-5 mr-45'>
-              <div className='flex gap-3'>
-              <UsersRound />
-              <p>Holders</p>
+                <CircleCheck fill='green' />
               </div>
-              <CircleCheck fill='green'/>
-            </div>
-            
-            <div className='flex justify-between ml-5 mr-45'>
-              <div className='flex gap-3'>
-              <ArrowLeftRight />
-              <p>Transactions</p>
-              </div>
-              <CircleX fill='red'/>
-            </div>
 
-            <div className='flex justify-between ml-5 mr-45'>
-              <div className='flex gap-3'>
-              <Amphora />
-              <p>Honeypot detected</p>
+              <div className='flex justify-between ml-5 mr-45'>
+                <div className='flex gap-3'>
+                  <UsersRound />
+                  <p>Holders</p>
+                </div>
+                <CircleCheck fill='green' />
               </div>
-              <CircleX fill='red'/>
-            </div>
-            
-            <div className='flex justify-between ml-5 mr-45'>
-              <div className='flex gap-3'>
-              <Droplet />
-              <p>Top holder concenration</p>
+
+              <div className='flex justify-between ml-5 mr-45'>
+                <div className='flex gap-3'>
+                  <ArrowLeftRight />
+                  <p>Transactions</p>
+                </div>
+                <CircleX fill='red' />
               </div>
-              <TriangleAlert fill='orange'/>
+
+              <div className='flex justify-between ml-5 mr-45'>
+                <div className='flex gap-3'>
+                  <Amphora />
+                  <p>Honeypot detected</p>
+                </div>
+                <CircleX fill='red' />
+              </div>
+
+              <div className='flex justify-between ml-5 mr-45'>
+                <div className='flex gap-3'>
+                  <Droplet />
+                  <p>Top holder concenration</p>
+                </div>
+                <TriangleAlert fill='orange' />
+              </div>
             </div>
           </div>
         </div>
-        </div>
-        
+
       </div>
     </div>
   );
 }
 
+interface FourCardsType {
+  image: string;
+  name: string;
+  totalAmount: number;
+  change24h: number;
+}
+
+function FourCard({
+  image,
+  name,
+  totalAmount,
+  change24h
+}: FourCardsType) {
+  return (
+    <Card className='bg-gray-800 border border-gray-600 text-white w-full flex flex-row '>
+      <div className='rounded-full pl-3'>
+        <img src={image} alt="img" className='rounded-full w-9 h-9' />
+      </div>
+      <div className='flex flex-col gap-2'>
+        <p className='text-md text-gray-200'>{name}</p>
+        <p className='text-xl font-bold'>${totalAmount} B</p>
+        <p className={`${change24h < 0 ? "text-red-500" : "text-green-500"}`}>{change24h}%(24h)</p>
+      </div>
+    </Card>
+  );
+}
