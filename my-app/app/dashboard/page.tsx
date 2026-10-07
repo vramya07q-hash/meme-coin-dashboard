@@ -12,7 +12,7 @@ export default function Dashboard() {
     total24hVolume: number;
     trendingCoinsCount: number;
     top5Dominance: number;
-    totalChange24h:number;
+    totalChange24h: number;
   }
 
   const [coins, setCoins] = useState<any[]>([]);
@@ -22,7 +22,7 @@ export default function Dashboard() {
     total24hVolume: 0,
     trendingCoinsCount: 0,
     top5Dominance: 0,
-    totalChange24h:0
+    totalChange24h: 0
   });
 
   async function getCoins() {
@@ -77,14 +77,14 @@ export default function Dashboard() {
     <div className='w-full min-h-screen bg-gray-900 '>
       {/* navbar */}
       <Navbar />
-      <div className='w-full h-auto flex lg:gap-2 justify-between' >
+      <div className='w-full h-auto flex xl:gap-2 justify-between' >
         {/* large first card */}
-        <div className='hidden lg:block w-1/2 h-auto  flex flex-col text-gray-200 items-center pl-4'>
+        <div className='hidden xl:block w-1/2 h-auto  flex flex-col text-gray-200 items-center pl-4'>
 
           <div className='w-full h-auto flex flex-col gap-4 mt-8 md:mt-5 pb-4  '>
             {/* trending coin */}
             <div>
-              <h1 className='text-2xl  '>Trending Meme Coins</h1>
+              <h1 className='text-2xl'>Trending Meme Coins</h1>
               <p className='text-sm font-light text-gray-300'>Top meme coins based on 24h market activity</p>
             </div>
 
@@ -118,15 +118,67 @@ export default function Dashboard() {
                 change24h={5.42}
               />
             </div>
+
+            {/* Trending meme coins*/}
+            <div className='h-auto w-full flex flex-col bg-gray-800 border border-gray-600 rounded-md gap-2'>
+              <h1 className='text-lg font-bold pl-2 pt-1'> Top Trending Meme Coins</h1>
+
+              <Table className="w-full">
+                <TableHeader className="text-white">
+                  <TableRow className="bg-gray-700 border border-indigo-900">
+                    <TableHead className="text-white">#</TableHead>
+                    <TableHead className="text-white">Coin</TableHead>
+                    <TableHead className="text-white">Price</TableHead>
+                    <TableHead className="text-white">24h Change</TableHead>
+                    <TableHead className="text-white">Market Cap</TableHead>
+                    <TableHead className="text-white">Chart</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                  {coins.map((coin: any, index: number) => (
+                    <TableRow
+                      key={coin.id}
+                      className="hover:bg-gray-600"
+                    >
+                      <TableCell>{index + 1}</TableCell>
+
+                      <TableCell>{coin.name}</TableCell>
+
+                      <TableCell>
+                        ${Number(coin.price).toFixed(2)}
+                      </TableCell>
+
+                      <TableCell
+                        className={
+                          coin.change24h >= 0
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }
+                      >
+                        {Number(coin.change24h).toFixed(2)}%
+                      </TableCell>
+
+                      <TableCell>{coin.marketCap}</TableCell>
+
+                      <TableCell>Chart</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+            </div>
+
+            <TrendingByVolume volume={volume}/>
           </div>
 
         </div>
         {/* Larger second part */}
-        <div className="w-full lg:w-1/2  h-auto bg-gray-900 flex flex-col gap-1 md:gap-0  items-center ">
+        <div className="w-full xl:w-1/2  h-auto bg-gray-900 flex flex-col gap-1 md:gap-0  items-center ">
           <div className="w-[95%] h-auto flex flex-col gap-4 mt-8 md:mt-5 pb-4  ">
 
             {/* first card */}
-            <div className="  flex flex-col  bg-gray-800 gap-1 rounded-lg h-auto lg:border lg:border-gray-600">
+            <div className="  flex flex-col  bg-gray-800 gap-1 rounded-lg h-auto xl:border xl:border-gray-600">
               <div className="h-1/6 w-full  flex gap-4 items-center  p-2 rounded-lg">
                 <img
                   src={coins[0]?.image}
@@ -169,47 +221,47 @@ export default function Dashboard() {
 
               {/* Chart */}
               <div className=" h-full w-full flex gap-2 flex-col items-center ">
-                <div className="h-[130px] lg:h-[250px] lg:border border-indigo-900 w-7/8 bg-pink-200"></div>
+                <div className="h-[130px] xl:h-[250px] xl:border border-indigo-900 w-7/8 bg-pink-200"></div>
 
-                <div className="grid grid-cols-2 h-2/5 w-11/12 text-sm font-light mb-2 text-gray-400 lg:flex lg:flex-col  lg:mt-3">
-                  <div className="border border-gray-600 w-full rounded-l-md  pl-2  pr-2 flex flex-col justify-center   lg:border-none">
-                    <div className="flex justify-between  lg:h-8 lg:border-t-1 lg:border-gray-600 lg:border-opacity-0 lg:items-center">
+                <div className="grid grid-cols-2 h-2/5 w-11/12 text-sm font-light mb-2 text-gray-400 xl:flex xl:flex-col  xl:mt-3">
+                  <div className="border border-gray-600 w-full rounded-l-md  pl-2  pr-2 flex flex-col justify-center   xl:border-none">
+                    <div className="flex justify-between  xl:h-8 xl:border-t-1 xl:border-gray-600 xl:border-opacity-0 xl:items-center">
                       <p>Market Cap</p>
                       <p className="text-gray-200">${coins[0]?.marketCap}</p>
                     </div>
-                    <div className="flex justify-between lg:h-8 lg:border-t-1 lg:border-gray-600 lg:items-center">
+                    <div className="flex justify-between xl:h-8 xl:border-t-1 xl:border-gray-600 xl:items-center">
                       <p>24h Volume</p>
                       <p className="text-gray-200">${coins[0]?.volume24h}</p>
                     </div>
-                    <div className="flex justify-between lg:h-8 lg:border-t-1 lg:border-gray-600 lg:items-center">
+                    <div className="flex justify-between xl:h-8 xl:border-t-1 xl:border-gray-600 xl:items-center">
                       <p>24h High</p>
                       <p className="text-gray-200">
                         ${coins[0]?.high24h.toFixed(3)}
                       </p>
                     </div>
-                    <div className="flex justify-between lg:h-8 lg:border-t-1 lg:border-gray-600 lg:items-center">
+                    <div className="flex justify-between xl:h-8 xl:border-t-1 xl:border-gray-600 xl:items-center">
                       <p>24h Low </p>
                       <p className="text-gray-200">
                         ${coins[0]?.low24h.toFixed(3)}
                       </p>
                     </div>
                   </div>
-                  <div className="border border-gray-600 w-full rounded-r-md pl-2 pr-2 grid-rows-4 flex flex-col justify-center lg:border-none">
-                    <div className="flex justify-between items-center mb-0 lg:border-t-1 lg:border-gray-600 lg:h-8">
+                  <div className="border border-gray-600 w-full rounded-r-md pl-2 pr-2 grid-rows-4 flex flex-col justify-center xl:border-none">
+                    <div className="flex justify-between items-center mb-0 xl:border-t-1 xl:border-gray-600 xl:h-8">
                       <p>Total Supply</p>
                       <p className="text-gray-200">${coins[0]?.marketCap}</p>
                     </div>
-                    <div className="flex justify-between  lg:border-t-1 lg:border-gray-600 lg:h-8 lg:items-center">
+                    <div className="flex justify-between  xl:border-t-1 xl:border-gray-600 xl:h-8 xl:items-center">
                       <p>Circulatary Supply</p>
                       <p className="text-gray-200">${coins[0]?.volume24h}</p>
                     </div>
-                    <div className="flex justify-between   lg:border-t-1 lg:border-gray-600 lg:h-8 lg:items-center">
+                    <div className="flex justify-between   xl:border-t-1 xl:border-gray-600 xl:h-8 xl:items-center">
                       <p>Blockchain</p>
                       <p className="text-gray-200">
                         ${coins[0]?.high24h.toFixed(3)}
                       </p>
                     </div>
-                    <div className="flex justify-between lg:border-t-1 lg:border-gray-600 lg:h-8 lg:items-center">
+                    <div className="flex justify-between xl:border-t-1 xl:border-gray-600 xl:h-8 xl:items-center">
                       <p>Contract Address</p>
                       <p className="text-gray-200 ">
                         ${coins[0]?.low24h.toFixed(3)}
@@ -220,7 +272,7 @@ export default function Dashboard() {
               </div>
             </div>
             {/* second card */}
-            <div className="lg:hidden row-span-3 border border-indigo-900   text-white h-full bg-gray-800 pt-1 pl-3 rounded-lg flex flex-col">
+            <div className="xl:hidden row-span-3 border border-indigo-900   text-white h-full bg-gray-800 pt-1 pl-3 rounded-lg flex flex-col">
               <p className="text-lg font-bold">Top Trending Meme Coins</p>
               <div className="h-10/5 w-full overflow-x-auto overflow-y-auto mt-2">
                 <Table className="row-span-4  w-full overflow-auto">
@@ -324,48 +376,14 @@ export default function Dashboard() {
                 </Table>
               </div>
             </div>
-
-            <div className="lg:hidden row-span-3 h-full text-white pl-2 pt-1 bg-gray-800 rounded-lg flex flex-col items-start">
-              <p className="text-lg font-semibold">Trending by 24h Volume</p>
-
-              <div className=" h-5/6 w-[95%] flex flex-col mt-4">
-                {volume.map((coin: any, index: number) => (
-                  <div
-                    key={coin.id}
-                    className="w-full flex items-center justify-between p-2 border-t border-gray-700"
-                  >
-
-                    <div className="flex items-center  gap-6">
-                      <p>{coin.index + 1}</p>
-
-                      <div className="flex items-center gap-1">
-                        <img src={coin.image} alt="profile image" className="h-6" />
-                        <p className="font-medium">{coin.name}</p>
-                        <p className="text-sm text-gray-400">
-                          ({coin.symbol.toUpperCase()})
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="w-[30%] h-2 border border-white rounded-lg">
-                      <div
-                        className="h-full bg-blue-500 rounded-lg"
-                        style={{
-                          width: `${(coin.volume24h / 100000000000) * 100}%`,
-                        }}
-                      ></div>
-                    </div>
-
-                    <p>${coin.volume24h}</p>
-                  </div>
-                ))}
-              </div>
+            <div className='xl:hidden'>
+            <TrendingByVolume volume={volume} />
             </div>
           </div>
 
           {/* Large Screen Second Card */}
 
-          <div className='hidden lg:block w-[95%] bg-gray-800 flex felx-col text-gray-400 border border-gray-600 rounded-md '>
+          <div className='hidden xl:block w-[95%] bg-gray-800 flex felx-col text-gray-400 border border-gray-600 rounded-md '>
             <div className='flex flex-col gap-2 mb-6 '>
               <div className='text-white text-lg flex ml-5 '>
                 <p>Risk & Security </p>
@@ -447,3 +465,81 @@ function FourCard({
     </Card>
   );
 }
+
+type VolumeCoin = {
+  id: string;
+  name: string;
+  symbol: string;
+  image: string;
+  volume24h: number;
+};
+
+type TrendingByVolumeProps = {
+  volume: VolumeCoin[];
+};
+
+ function TrendingByVolume({
+  volume
+}: TrendingByVolumeProps,
+
+) {
+  return (
+    <div className={`row-span-3 max-h-full text-white pl-2 pt-1 bg-gray-800 rounded-lg flex flex-col items-start`}>
+      
+      <p className="text-lg font-semibold">
+        Trending by 24h Volume
+      </p>
+
+      <div className=" w-[95%] flex flex-col mt-2">
+        {volume.map((coin, index) => (
+          <div
+            key={coin.id}
+            className="w-full flex items-center justify-between xl:p-1 2xl:p-2 p-2 border-t border-gray-700"
+          >
+
+            {/* Rank + Coin */}
+            <div className="flex items-center gap-6">
+              <p>{index + 1}</p>
+
+              <div className="flex items-center gap-1">
+                <img
+                  src={coin.image}
+                  alt={`${coin.name} logo`}
+                  className="h-6"
+                />
+
+                <p className="font-normal">
+                  {coin.name}
+                </p>
+
+                <p className="text-sm text-gray-400">
+                  ({coin.symbol.toUpperCase()})
+                </p>
+              </div>
+            </div>
+
+            {/* Volume bar */}
+            <div className="w-[30%] h-2 border border-white rounded-lg">
+              <div
+                className="h-full bg-blue-500 rounded-lg"
+                style={{
+                  width: `${Math.min(
+                    (coin.volume24h / 100000000000) * 100,
+                    100
+                  )}%`,
+                }}
+              />
+            </div>
+
+            {/* Volume */}
+            <p>
+              ${coin.volume24h.toFixed(2)}
+            </p>
+
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+

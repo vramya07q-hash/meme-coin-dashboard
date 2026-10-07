@@ -7,7 +7,8 @@ export default async function TrendingCoins(req: Request, res: Response) {
       "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h",
     );
 
-    const coins = response.data.splice(0, 7).map((coin: any) => ({
+    const coins = response.data.splice(0,10).map((coin: any) => ({
+      index:coin.index,
       id: coin.id,
       name: coin.name,
       symbol: coin.symbol,
@@ -217,3 +218,5 @@ export async function totalValues(req: Request, res: Response) {
     });
   }
 }
+
+
