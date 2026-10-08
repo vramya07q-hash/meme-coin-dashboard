@@ -32,14 +32,20 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function PriceChart() {
+interface PriceChartProps {
+  days: number;
+}
+
+export default function PriceChart(days:PriceChartProps) {
   const [chartData, setChartData] = useState<any[]>([]);
 
   async function fetchChartData() {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/coins/history/pepe?days=30"
+        `http://localhost:3000/api/coins/history/pepe?days=${days}`
       );
+
+      console.log("the day from response:",days);
 
       const formattedData = response.data.map(
         (item: [number, number]) => ({
@@ -59,16 +65,11 @@ export default function PriceChart() {
   }, []);
 
   return (
-    <div className="w-full h-[200px] ">
-      <Card className="h-full bg-[#061b35] border-[#12365c]">
+    <div className="w-full h-[200px] xl:h-[250px] ">
+      <Card className="h-full w-full bg-[#061b35] border-[#12365c] overflow-hidden">
 
-        <CardHeader className="pb-0">
-          <CardTitle className="text-white">
-            PEPE Price - 24 Hours
-          </CardTitle>
-        </CardHeader>
-
-        <CardContent className="h-[250px]">
+        {/* Chart */}
+        <CardContent className="h-[190px] xl:h-[240px] p-0">
           <ChartContainer
             config={chartConfig}
             className="h-full w-full"
@@ -76,14 +77,13 @@ export default function PriceChart() {
             <AreaChart
               data={chartData}
               margin={{
-                left: 10,
-                right: 10,
-                top: 10,
+                left: 5,
+                right: 5,
+                top: 5,
                 bottom: 0,
               }}
             >
 
-              {/* Gradient */}
               <defs>
                 <linearGradient
                   id="priceGradient"
@@ -97,7 +97,6 @@ export default function PriceChart() {
                     stopColor="#00ff88"
                     stopOpacity={0.45}
                   />
-
                   <stop
                     offset="100%"
                     stopColor="#00ff88"
@@ -106,7 +105,6 @@ export default function PriceChart() {
                 </linearGradient>
               </defs>
 
-              {/* Grid */}
               <CartesianGrid
                 strokeDasharray="0"
                 vertical={true}
@@ -114,29 +112,30 @@ export default function PriceChart() {
                 stroke="#12365c"
               />
 
-              {/* X Axis */}
               <XAxis
                 dataKey="time"
                 tickLine={false}
                 axisLine={false}
-                tickMargin={10}
-                tick={{ fill: "#9ca3af", fontSize: 12 }}
+                tickMargin={4}
+                tick={{ fill: "#9ca3af", fontSize: 9 }}
+                tickCount={4}
                 tickFormatter={(value) =>
-                  new Date(value).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
+                  new Date(value).toLocaleDateString([], {
+                    month: "short",
+                    day: "numeric",
                   })
                 }
               />
 
-              {/* Y Axis */}
               <YAxis
                 orientation="right"
                 tickLine={false}
                 axisLine={false}
-                tick={{ fill: "#9ca3af", fontSize: 12 }}
-                tickFormatter={(value) => Number(value).toFixed(6)}
+                width={45}
+                tick={{ fill: "#9ca3af", fontSize: 9 }}
+                tickFormatter={(value) =>
+                  Number(value).toFixed(6)
+                }
               />
 
               <ChartTooltip
@@ -155,32 +154,31 @@ export default function PriceChart() {
                       }
 
                       return new Date(timestamp).toLocaleString([], {
+                        month: "short",
+                        day: "numeric",
                         hour: "2-digit",
                         minute: "2-digit",
                         hour12: false,
                       });
                     }}
-                    formatter={(value) => {
-                      return [
-                        Number(value).toFixed(10),
-                        " Price",
-                      ];
-                    }}
+                    formatter={(value) => [
+                      Number(value).toFixed(10),
+                      " Price",
+                    ]}
                   />
                 }
               />
 
-              {/* Gradient area + green line */}
               <Area
                 type="monotone"
                 dataKey="price"
                 stroke="#00ff88"
-                strokeWidth={2.5}
+                strokeWidth={2}
                 fill="url(#priceGradient)"
                 fillOpacity={1}
                 dot={false}
                 activeDot={{
-                  r: 4,
+                  r: 3,
                   fill: "#00ff88",
                 }}
               />

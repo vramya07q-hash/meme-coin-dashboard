@@ -5,6 +5,16 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { useEffect, useState } from "react";
 import { Amphora, ArrowLeftRight, CircleCheck, CircleX, Droplet, ReceiptText, TriangleAlert, UsersRound } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import PriceChart from "../components/chart";
+
 
 export default function Dashboard() {
   interface TotalValuesType {
@@ -24,6 +34,7 @@ export default function Dashboard() {
     top5Dominance: 0,
     totalChange24h: 0
   });
+  const [days,setDays] = useState<number>(7);
 
   async function getCoins() {
     try {
@@ -201,27 +212,36 @@ export default function Dashboard() {
               </div>
 
               {/*days */}
-              <div className="w-full h-1/10 bg-gray-700 grid grid-cols-5  rounded-lg text-white  font-normal text-sm ">
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2  ">
+              <div className="w-full h-1/10 bg-gray-700 grid grid-cols-5  rounded-lg text-white  font-normal text-sm">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2" 
+                onClick={() => setDays(7)}>
                   7D
                 </p>
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2"
+                onClick={() => setDays(30)}
+                >
                   1M
                 </p>
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2"
+                onClick={() => setDays(90)}>
                   3M
                 </p>
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2"
+                onClick={() => setDays(365)}>
                   1Y
                 </p>
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2">
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2"
+                onClick={() => setDays(1)}
+                >
                   ALL
                 </p>
               </div>
 
               {/* Chart */}
-              <div className=" h-full w-full flex gap-2 flex-col items-center ">
-                <div className="h-[130px] xl:h-[250px] xl:border border-indigo-900 w-7/8 bg-pink-200"></div>
+              <div className=" h-auto w-full flex gap-2 flex-col items-center ">
+                <div className="h-auto xl:h-[250px] xl:border border-indigo-900 w-7/8 rounded-xl">
+                <PriceChart days={Number(days)} />
+                </div>
 
                 <div className="grid grid-cols-2 h-2/5 w-11/12 text-sm font-light mb-2 text-gray-400 xl:flex xl:flex-col  xl:mt-3">
                   <div className="border border-gray-600 w-full rounded-l-md  pl-2  pr-2 flex flex-col justify-center   xl:border-none">
@@ -255,7 +275,7 @@ export default function Dashboard() {
                       <p>Circulatary Supply</p>
                       <p className="text-gray-200">${coins[0]?.volume24h}</p>
                     </div>
-                    <div className="flex justify-between   xl:border-t-1 xl:border-gray-600 xl:h-8 xl:items-center">
+                    <div className="flex justify-between  xl:border-t-1 xl:border-gray-600 xl:h-8 xl:items-center">
                       <p>Blockchain</p>
                       <p className="text-gray-200">
                         ${coins[0]?.high24h.toFixed(3)}
@@ -542,4 +562,3 @@ type TrendingByVolumeProps = {
     </div>
   );
 }
-

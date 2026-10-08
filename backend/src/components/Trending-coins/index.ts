@@ -220,3 +220,26 @@ export async function totalValues(req: Request, res: Response) {
 }
 
 
+export async function getCoinHistory(req:Request,res:Response) {
+  try{
+  const {id} = req.params;
+  const {days} = req.query;
+  const response = await axios.get(
+      `https://api.coingecko.com/api/v3/coins/${id}/market_chart`,
+      {
+        params: {
+          vs_currency: "usd",
+          days: days,
+        },
+      }
+    );
+
+    const prices = response.data.prices;
+
+    return res.json(prices);
+  } catch(error:any) {
+    console.error('error status:',error.response?.status);
+    console.error("error:",error.response);
+
+  }
+}
