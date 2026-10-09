@@ -15,7 +15,6 @@ import {
 } from "recharts";
 import PriceChart from "../components/chart";
 
-
 export default function Dashboard() {
   interface TotalValuesType {
     totalMarketCap: number;
@@ -34,7 +33,8 @@ export default function Dashboard() {
     top5Dominance: 0,
     totalChange24h: 0
   });
-  const [days,setDays] = useState<number>(7);
+  const[billion,setBillion] = useState(false);
+  const [days, setDays] = useState<number>(7);
 
   async function getCoins() {
     try {
@@ -106,6 +106,8 @@ export default function Dashboard() {
                 name="Total Market Cap"
                 totalAmount={Number(totalValues.totalMarketCap.toFixed(2))}
                 change24h={Number(totalValues.totalChange24h.toFixed(2))}
+                inBillion={true}
+                isAmount={true}
               />
 
               <FourCard
@@ -113,13 +115,17 @@ export default function Dashboard() {
                 name="Total 24h Volume"
                 totalAmount={Number(totalValues.total24hVolume.toFixed(2))}
                 change24h={5.42}
+                inBillion={true}
+                isAmount={true}
               />
 
               <FourCard
-                image="/star.jpg"
+                image="/starIcon.jpg"
                 name="Trending Coins"
                 totalAmount={totalValues.trendingCoinsCount}
                 change24h={5.42}
+                inBillion={false}
+                isAmount={false}
               />
 
               <FourCard
@@ -127,6 +133,8 @@ export default function Dashboard() {
                 name="Dominance"
                 totalAmount={Number(totalValues.top5Dominance.toFixed(2))}
                 change24h={5.42}
+                inBillion={true}
+                isAmount={true}
               />
             </div>
 
@@ -142,7 +150,6 @@ export default function Dashboard() {
                     <TableHead className="text-white">Price</TableHead>
                     <TableHead className="text-white">24h Change</TableHead>
                     <TableHead className="text-white">Market Cap</TableHead>
-                    <TableHead className="text-white">Chart</TableHead>
                   </TableRow>
                 </TableHeader>
 
@@ -157,7 +164,7 @@ export default function Dashboard() {
                       <TableCell>{coin.name}</TableCell>
 
                       <TableCell>
-                        ${Number(coin.price).toFixed(2)}
+                        ${Number(coin.price).toFixed(2)} B
                       </TableCell>
 
                       <TableCell
@@ -170,9 +177,7 @@ export default function Dashboard() {
                         {Number(coin.change24h).toFixed(2)}%
                       </TableCell>
 
-                      <TableCell>{coin.marketCap}</TableCell>
-
-                      <TableCell>Chart</TableCell>
+                      <TableCell>${coin.marketCap.toFixed(2)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -180,7 +185,7 @@ export default function Dashboard() {
 
             </div>
 
-            <TrendingByVolume volume={volume}/>
+            <TrendingByVolume volume={volume} />
           </div>
 
         </div>
@@ -213,25 +218,25 @@ export default function Dashboard() {
 
               {/*days */}
               <div className="w-full h-1/10 bg-gray-700 grid grid-cols-5  rounded-lg text-white  font-normal text-sm">
-                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2" 
-                onClick={() => setDays(7)}>
+                <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2"
+                  onClick={() => setDays(7)}>
                   7D
                 </p>
                 <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2"
-                onClick={() => setDays(30)}
+                  onClick={() => setDays(30)}
                 >
                   1M
                 </p>
                 <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2"
-                onClick={() => setDays(90)}>
+                  onClick={() => setDays(90)}>
                   3M
                 </p>
                 <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2"
-                onClick={() => setDays(365)}>
+                  onClick={() => setDays(365)}>
                   1Y
                 </p>
                 <p className="hover:cursor-pointer text-center hover:bg-indigo-900 rounded-md  hover:border hover:border-gray-600 py-2"
-                onClick={() => setDays(1)}
+                  onClick={() => setDays(1)}
                 >
                   ALL
                 </p>
@@ -240,7 +245,12 @@ export default function Dashboard() {
               {/* Chart */}
               <div className=" h-auto w-full flex gap-2 flex-col items-center ">
                 <div className="h-auto xl:h-[250px] xl:border border-indigo-900 w-7/8 rounded-xl">
-                <PriceChart days={Number(days)} />
+                  {coins.length > 0 && coins[0]?.id && (
+                    <PriceChart
+                      days={Number(days)}
+                      id={coins[0].id}
+                    />
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 h-2/5 w-11/12 text-sm font-light mb-2 text-gray-400 xl:flex xl:flex-col  xl:mt-3">
@@ -303,7 +313,6 @@ export default function Dashboard() {
                       <TableHead className="text-white">Price</TableHead>
                       <TableHead className="text-white">24h Change</TableHead>
                       <TableHead className="text-white">Market Cap</TableHead>
-                      <TableHead className="text-white">Chart</TableHead>
                     </TableRow>
                   </TableHeader>
 
@@ -321,8 +330,7 @@ export default function Dashboard() {
                       >
                         {coins[0]?.change24h.toFixed(2)}%
                       </TableCell>
-                      <TableCell>${coins[0]?.marketCap}</TableCell>
-                      <TableCell>Chart</TableCell>
+                      <TableCell>${coins[0]?.marketCap.toFixed(2)} B</TableCell>
                     </TableRow>
 
                     <TableRow className="hover:bg-gray-600">
@@ -338,8 +346,8 @@ export default function Dashboard() {
                       >
                         {coins[1]?.change24h.toFixed(2)}%
                       </TableCell>
-                      <TableCell>${coins[1]?.marketCap}</TableCell>
-                      <TableCell>Chart</TableCell>
+                      <TableCell>${coins[1]?.marketCap.toFixed(2)} B</TableCell>
+
                     </TableRow>
 
                     <TableRow className="hover:bg-gray-600">
@@ -355,8 +363,7 @@ export default function Dashboard() {
                       >
                         {coins[2]?.change24h.toFixed(2)}%
                       </TableCell>
-                      <TableCell>${coins[2]?.marketCap}</TableCell>
-                      <TableCell>Chart</TableCell>
+                      <TableCell>${coins[2]?.marketCap.toFixed(2)} B</TableCell>
                     </TableRow>
 
                     <TableRow className="hover:bg-gray-600">
@@ -372,8 +379,7 @@ export default function Dashboard() {
                       >
                         {coins[3]?.change24h.toFixed(2)}%
                       </TableCell>
-                      <TableCell>${coins[3]?.marketCap}</TableCell>
-                      <TableCell>Chart</TableCell>
+                      <TableCell>${coins[3]?.marketCap.toFixed(2)} B</TableCell>
                     </TableRow>
 
                     <TableRow className="hover:bg-gray-600">
@@ -389,15 +395,14 @@ export default function Dashboard() {
                       >
                         {coins[4]?.change24h.toFixed(2)}%
                       </TableCell>
-                      <TableCell>${coins[4]?.marketCap}</TableCell>
-                      <TableCell>Chart</TableCell>
+                      <TableCell>${coins[4]?.marketCap.toFixed(2)} B</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </div>
             </div>
             <div className='xl:hidden'>
-            <TrendingByVolume volume={volume} />
+              <TrendingByVolume volume={volume} />
             </div>
           </div>
 
@@ -464,13 +469,18 @@ interface FourCardsType {
   name: string;
   totalAmount: number;
   change24h: number;
+  inBillion:boolean;
+  isAmount:boolean;
 }
 
-function FourCard({
+function FourCard
+({
   image,
   name,
   totalAmount,
-  change24h
+  change24h,
+  inBillion,
+  isAmount
 }: FourCardsType) {
   return (
     <Card className='bg-gray-800 border border-gray-600 text-white w-full flex flex-row '>
@@ -479,7 +489,7 @@ function FourCard({
       </div>
       <div className='flex flex-col gap-2'>
         <p className='text-md text-gray-200'>{name}</p>
-        <p className='text-xl font-bold'>${totalAmount} B</p>
+        <p className={`text-xl font-bold `}>{isAmount? "$":""}{totalAmount} {inBillion? "B": ""}</p>
         <p className={`${change24h < 0 ? "text-red-500" : "text-green-500"}`}>{change24h}%(24h)</p>
       </div>
     </Card>
@@ -498,14 +508,14 @@ type TrendingByVolumeProps = {
   volume: VolumeCoin[];
 };
 
- function TrendingByVolume({
+function TrendingByVolume({
   volume
 }: TrendingByVolumeProps,
 
 ) {
   return (
     <div className={`row-span-3 max-h-full text-white pl-2 pt-1 bg-gray-800 rounded-lg flex flex-col items-start`}>
-      
+
       <p className="text-lg font-semibold">
         Trending by 24h Volume
       </p>
@@ -514,7 +524,7 @@ type TrendingByVolumeProps = {
         {volume.map((coin, index) => (
           <div
             key={coin.id}
-            className="w-full flex items-center justify-between xl:p-1 2xl:p-2 p-2 border-t border-gray-700"
+            className="w-full flex items-center justify-between xl:p-1 sm:p-1 2xl:p-2 p-2 border-t border-gray-700"
           >
 
             {/* Rank + Coin */}
@@ -539,7 +549,7 @@ type TrendingByVolumeProps = {
             </div>
 
             {/* Volume bar */}
-            <div className="w-[30%] h-2 border border-white rounded-lg">
+            <div className="w-[20%] h-2 sm:w-[30%] border border-white rounded-lg ">
               <div
                 className="h-full bg-blue-500 rounded-lg"
                 style={{

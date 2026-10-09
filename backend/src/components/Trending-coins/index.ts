@@ -15,7 +15,7 @@ export default async function TrendingCoins(req: Request, res: Response) {
       image: coin.image,
       price: coin.current_price,
       change24h: coin.price_change_percentage_24h,
-      marketCap: coin.market_cap,
+      marketCap: coin.market_cap / 1_000_000_000,
       volume24h: coin.total_volume,
       high24h: coin.high_24h,
       low24h: coin.low_24h,
@@ -219,27 +219,44 @@ export async function totalValues(req: Request, res: Response) {
   }
 }
 
-
-export async function getCoinHistory(req:Request,res:Response) {
-  try{
-  const {id} = req.params;
-  const {days} = req.query;
-  const response = await axios.get(
-      `https://api.coingecko.com/api/v3/coins/${id}/market_chart`,
-      {
-        params: {
-          vs_currency: "usd",
-          days: days,
-        },
-      }
-    );
-
-    const prices = response.data.prices;
-
-    return res.json(prices);
-  } catch(error:any) {
-    console.error('error status:',error.response?.status);
-    console.error("error:",error.response);
-
+const cachedPrices = new Map<
+  string,
+  {
+    data: [number, number][];
+    timestamp: number;
   }
+>();
+
+const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
+
+export async function getCoinHistory(
+  id: string,
+  days: string
+): Promise<[number, number][]> {
+  const cacheKey = `${id}-${days}`;
+  const cached = cachedPrices.get(cacheKey);
+
+  // Return cached data instead of calling CoinGecko again
+  if (cached && Date.now() - cached.timestamp < CACHE_TIME) {
+    return cached.data;
+  }
+
+  const response = await axios.get(
+    `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(id)}/market_chart`,
+    {
+      params: {
+        vs_currency: "usd",
+        days,
+      },
+    }
+  );
+
+  const prices: [number, number][] = response.data.prices;
+
+  cachedPrices.set(cacheKey, {
+    data: prices,
+    timestamp: Date.now(),
+  });
+
+  return prices;
 }
