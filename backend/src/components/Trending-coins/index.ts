@@ -184,7 +184,7 @@ export async function totalValues(req: Request, res: Response) {
       const trendingCoinsCount = coins.length;
 
       const top5MarketCap = coins
-        .slice()
+        .slice()  //creating a shallow copy 
         .sort((a: any, b: any) => (b.market_cap || 0) - (a.market_cap || 0))
         .slice(0, 5)
         .reduce((sum: number, coin: any) => sum + (coin.market_cap || 0), 0);

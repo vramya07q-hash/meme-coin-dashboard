@@ -5,14 +5,6 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { useEffect, useState } from "react";
 import { Amphora, ArrowLeftRight, CircleCheck, CircleX, Droplet, ReceiptText, TriangleAlert, UsersRound } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import {
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import PriceChart from "../components/chart";
 
 export default function Dashboard() {
@@ -33,7 +25,6 @@ export default function Dashboard() {
     top5Dominance: 0,
     totalChange24h: 0
   });
-  const[billion,setBillion] = useState(false);
   const [days, setDays] = useState<number>(7);
 
   async function getCoins() {

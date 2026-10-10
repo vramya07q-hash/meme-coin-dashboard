@@ -58,11 +58,11 @@ export default function PriceChart({ days, id }: PriceChartProps) {
 
       try {
         const response = await axios.get<[number, number][]>(
-          `http://localhost:3000/api/coins/history/${encodeURIComponent(id)}?days=365`
+          `http://localhost:3000/api/coins/history/${encodeURIComponent(id)}?days=${days}`
         );
 
         const formattedData: PricePoint[] = response.data.map(
-          ([time, price]) => ({
+          ([time,price]) => ({
             time,
             price,
           })
